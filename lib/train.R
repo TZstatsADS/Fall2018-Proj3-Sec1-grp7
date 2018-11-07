@@ -5,6 +5,14 @@
 ### Author: Chengliang Tang
 ### Project 3
 
+### load libraries
+library("foreach")
+library("dplyr")
+library("doParallel")
+library("snow")
+
+cl <- makeCluster(detectCores(logical = F))
+registerDoParallel(cl)
 
 train <- function(dat_train, label_train, par=NULL){
   
@@ -14,9 +22,6 @@ train <- function(dat_train, label_train, par=NULL){
   ###  -  features from LR images 
   ###  -  responses from HR images
   ### Output: a list for trained models
-  
-  ### load libraries
-  library("gbm")
   
   ### creat model list
   modelList <- list()
@@ -28,9 +33,10 @@ train <- function(dat_train, label_train, par=NULL){
     depth <- par$depth
   }
   
-  ### the dimension of response arrat is * x 4 x 3, which requires 12 classifiers
-  ### this part can be parallelized
-  for (i in 1:12){
+  ### the dimension of response array is * x 4 x 3, which requires 12 classifiers
+  ### this part has been parallelized
+  modelList <- foreach(i=1:12,
+                       .packages="gbm") %dopar% {
     ## calculate column and channel
     c1 <- (i-1) %% 4 + 1
     c2 <- (i-c1) %/% 4 + 1
@@ -43,8 +49,10 @@ train <- function(dat_train, label_train, par=NULL){
                        bag.fraction = 0.5,
                        verbose=FALSE)
     best_iter <- gbm.perf(fit_gbm, method="OOB", plot.it = FALSE)
-    modelList[[i]] <- list(fit=fit_gbm, iter=best_iter)
+    list(fit=fit_gbm, iter=best_iter)
   }
   
   return(modelList)
 }
+
+#test_model <- train(test_feat,test_lab)
