@@ -36,5 +36,5 @@ def deleteGif(folderPath):
 
 
 if __name__ == '__main__':
-    folderPath = './data/train_set/HR'
+    folderPath = './data/LR'
     deleteGif(folderPath)
