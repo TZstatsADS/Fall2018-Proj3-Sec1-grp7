@@ -159,6 +159,6 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         model = SRCNN(sess, './dataset.h5', epoch, batch_size, 1/3)
         model.load_model()
-        new_image = model.predict('./images/interpolation/63.jpg')
-        cv2.imwrite('./images/output/63.jpg', new_image)
+        new_image = model.predict('C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/output/interpolation/63.jpg')
+        cv2.imwrite('C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/output/output/63.jpg', new_image)
 
