@@ -14,7 +14,7 @@ Term: Fall 2018
 
 + Project summary: In this project, we created a classification engine for enhance the resolution of images. 
 	
-**Contribution statement**: ([default](doc/a_note_on_contributions.md)) Hongru Liu did the baseline and Random Forest method, and trained baseline model. Chenghao Yu trained the Random Forest model. Sen Fu, Chenghao Yu did the CNN method. Sen Fu trained CNN model and Random Forest model. Jiangsong Chen announced that he did some debug things in CNN but we did not receive any debug result from him and very hard to contact with him. All team members approve our work presented in this GitHub repository including this contributions statement. 
+**Contribution statement**: ([default](doc/a_note_on_contributions.md)) Hongru Liu did the baseline and Random Forest method, and trained baseline model. Chenghao Yu trained the Random Forest model. Sen Fu, Chenghao Yu did the CNN method. Sen Fu trained CNN model and Random Forest model. Jiangsong Chen did SRCNN method in python. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
