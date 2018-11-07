@@ -11,7 +11,7 @@ class DataProcessor(object):
 
     def reduce_size(self, srcFolder, destFolder, magnification):
         if (magnification >= 1):
-            print('Magnification must be less than 1£¡')
+            print('Magnification must be less than 1Â£Â¡')
             return False
 
         fileNames = utils.eachFile(srcFolder)
@@ -102,5 +102,5 @@ class DataProcessor(object):
 
 if __name__ == '__main__':
     dataProcessor = DataProcessor()
-    dataProcessor.reduce_size('./data/cut', './data/lowResolution', 1/5)
-    dataProcessor.restore_size('./data/lowResolution', './data/interpolation','./data/cut')
+    dataProcessor.reduce_size('./output/cut', './data/LR', 1/5)
+    dataProcessor.restore_size('./data/LR', './output/interpolation','./output/cut')
