@@ -1,0 +1,52 @@
+---
+title: "ADS group 7"
+author: "Chenghao Yu cy2475"
+date: "November 5, 2018"
+output: pdf_document
+---
+```{r}
+pct_mat <- matrix(1, nrow=5, ncol=7)
+```
+
+```{r cars}
+#add offset matrix to be square matix
+resizel <- function(pct_mat){
+  y <- dim(pct_mat)[1]
+  x <- dim(pct_mat)[2]
+  offset <- abs(x-y)
+  if (x<y){
+    offsetmat <- matrix(0, nrow = y, ncol = offset)
+    pct2 <- cbind(offsetmat,pct_mat)
+    dir <- 0
+  }
+  else if(x>y){
+    offsetmat <- matrix(0, nrow = offset, ncol = x)
+    pct2 <- rbind(offsetmat,pct_mat)
+    dir <- 1
+  }
+  return(list("pct_mat" = pct2, "offset"=offset, "dir"=dir))
+}
+
+#remove offset matrix to original length-width raito
+resizeh <- function(pct_mat, offset, dir){
+  y <- dim(pct_mat)[1]
+  x <- dim(pct_mat)[2]
+  if (dir==0){
+    pct2 <- pct[1:y,(2*offset+1):x]
+  }
+  else{
+    pct2 <- pct[(2*offset+1):y,1:x]
+  }
+  return(pct2)
+}
+```
+```{r}
+test <- resizel(pct_mat)$pct_mat
+offset <- resizel(pct_mat)$offset
+dir <- resizel(pct_mat)$dir
+```
+
+```{r}
+test2 <- resizeh(test, offset, dir)
+```
+
