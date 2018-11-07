@@ -1,8 +1,4 @@
-sudo pip install cython
-sudo apt-get install libhdf5-dev
-sudo pip install h5py
-
-import h5py
+import h5py
 import numpy as np
 
 X = np.arange(1, 31)
