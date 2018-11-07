@@ -102,6 +102,5 @@ class DataProcessor(object):
 
 if __name__ == '__main__':
     dataProcessor = DataProcessor()
-    dataProcessor.reduce_size('C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/output/cut', 'C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/data/train_set/LR', 1/5)
-    dataProcessor.restore_size('C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/data/train_set/LR', 'C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/output/interpolation','C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/output/cut')
-
+    dataProcessor.reduce_size('./data/cut', './data/lowResolution', 1/5)
+    dataProcessor.restore_size('./data/lowResolution', './data/interpolation','./data/cut')

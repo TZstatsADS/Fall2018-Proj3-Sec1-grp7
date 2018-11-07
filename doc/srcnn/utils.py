@@ -36,5 +36,5 @@ def deleteGif(folderPath):
 
 
 if __name__ == '__main__':
-    folderPath = 'C:/Users/ren_g/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/data/train_set/HR'
+    folderPath = './data/train_set/HR'
     deleteGif(folderPath)
