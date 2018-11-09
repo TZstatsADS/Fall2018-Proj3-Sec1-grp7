@@ -16,9 +16,9 @@ Term: Fall 2018
 	
 **Contribution statement**: All team members approve our work presented in this GitHub repository including this contributions statement.
 + Hongru Liu did the baseline model and Random Forest method, and trained baseline model and wrote the readme file.
-+ Chenghao Yu did CNN method, trained the SRCNN model and readme file. 
-+ Sen Fu did the CNN method, trained CNN model, Random Forest model and the PSNR calculator. 
-+ Jiangsong Chen did SRCNN method in python and trained SRCNN model. 
++ Chenghao Yu did SRCNN method in python individually, trained the SRCNN model and readme file. The final result is given by this SRCNN code.
++ Sen Fu did the CNN method in R individually, trained CNN model, Random Forest model and the PSNR calculator. 
++ Jiangsong Chen did another SRCNN method in python individually and trained SRCNN model. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
@@ -34,9 +34,11 @@ proj/
        └── RSR/
 ├── doc/
     └── srcnn /
-    	├── model/
-	├── __pycache__/
-	└──.idea
+    	├── checkpoint 
+	├── train_set
+	├── train_output
+	├── test_output
+	└── test_set
 ├── figs/
 └── output/
     ├── cut/
