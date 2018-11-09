@@ -14,6 +14,10 @@ if(!require("EBImage")){
 }
 
 if(!require("randomForest")){
+  install.packages("randomForest")
+}
+
+if(!require("h2o")){
   install.packages("h2o")
 }
 
@@ -21,9 +25,15 @@ if(!require("caret")){
   install.packages("caret")
 }
 
+if(!require("doParallel")){
+  install.packages("doParallel")
+}
+
 library("EBImage")
 library("randomForest")
 library("caret")
+library("h2o")
+library("doParallel")
 ```
 
 
@@ -34,7 +44,7 @@ Set the working directory to the image folder. Specify the training and the test
 ```{r wkdir, eval=FALSE}
 set.seed(2018)
 #setwd("./ads_fall2018_proj3")
-setwd("/Users/hongru/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/Github/doc/")
+setwd("C:/Users/Albert/Desktop/Proj3-Sec1Group7/doc")
 # here replace it with your own path or manually set it in RStudio to where this rmd file is located. 
 # use relative path for reproducibility
 ```
@@ -58,9 +68,7 @@ In this chunk, we have a set of controls for the evaluation experiments.
 + (T/F) process features for test set
 
 ```{r exp_setup}
-run.cv=TRUE # run cross-validation on the training set
-K <- 5  # number of CV folds
-run.feature.train=TRUE # process features for training set
+run.feature.train=F # process features for training set
 run.test=TRUE # run evaluation on an independent test set
 run.feature.test=TRUE # process features for test set
 ```
@@ -68,8 +76,18 @@ run.feature.test=TRUE # process features for test set
 Using cross-validation or independent test set evaluation, we compare the performance of models with different specifications. In this project, we use randomForest with different `mtry`. In the following chunk, we list, in a vector, setups (in this case, `mtry`) corresponding to models that we will compare. 
 
 ```{r model_setup}
-model_values = seq(0.6, 0.8, by = 0.05)
-model_labels = paste("randomForest with samplesize =", model_values)
+# define paremeter grid
+hyper_grid.h2o <- list(
+  ntrees = seq(200, 400, by = 100),
+  mtries = c(1,3,5),
+  sample_rate = c(.55, .632, .70))
+# define grid search path
+search_criteria <- list(
+  strategy = "RandomDiscrete",
+  stopping_metric = "mse",
+  stopping_tolerance = 0.005,
+  stopping_rounds = 10,
+  max_runtime_secs = 30*60)
 ```
 
 ### Step 2: import training images class labels.
@@ -77,7 +95,7 @@ model_labels = paste("randomForest with samplesize =", model_values)
 We provide extra information of image label: car (0), flower (1), market (2). These labels are not necessary for your model.
 
 ```{r train_label}
-train_label_path <- "/Users/hongru/Documents/GitHub/Fall2018-Proj3-Sec1-grp7/data/train_set/label.csv"
+train_label_path <- "C:/Users/Albert/Desktop/Proj3-Sec1Group7/data/train_set/label.csv"
 extra_label <- read.csv(train_label_path, colClasses=c("NULL", NA, NA))
 ```
 
@@ -97,72 +115,38 @@ if(run.feature.train){
   tm_feature_train <- system.time(dat_train <- feature(train_LR_dir, train_HR_dir))
   feat_train <- dat_train$feature
   label_train <- dat_train$label
+  save(dat_train, file="../output/feature_train_rf.RData")
 }
-
-#save(dat_train, file="../output/feature_train.RData")
 ```
 
 
 ### Step 4: Train a prediction model with training images
 Call the train model and test model from library. 
 
-`trainRF.R` and `testRF.R` should be wrappers for all your model training steps and your prediction steps. 
-+ `train.R`
+`tune_rf.R` and `test_rf.R` should be wrappers for all your model training steps and your prediction steps. 
++ `tune_rf.R`
   + Input: a path that points to the training set features and responses.
   + Output: an RData file that contains trained classifiers in the forms of R objects: models/settings/links to external trained configurations.
-+ `test.R`
++ `test_rf.R`
   + Input: a path that points to the test set features.
   + Input: an R object that contains a trained classifier.
   + Output: an R object of response predictions on the test set. If there are multiple classifiers under evaluation, there should be multiple sets of label predictions. 
 ```{r loadlib}
-source("../lib/RandomForest/trainRF.R")
-source("../lib/RandomForest/testRF.R")
+source("../lib/RandomForest/tune_rf.R")
+source("../lib/RandomForest/test_rf.R")
 ```
 
-#### Model selection with cross-validation
-* Do model selection by choosing among different values of training model parameters, that is, the interaction depth for GBM in this example. 
-```{r runcv, message=FALSE, warning=FALSE}
-source("../lib/RandomForest/CVRF.R")
-
-if(run.cv){
-  err_cv <- array(dim=c(length(model_values), 2))
-  for(k in 1:length(model_values)){
-    cat("k=", k, "\n")
-    err_cv[k,] <- cv_RF(feat_train, label_train, model_values[k], K)
-  }
-  save(err_cv, file="../output/err_cv_RF.RData")
-}
-```
-
-Visualize cross-validation results. 
-```{r cv_vis}
-if(run.cv){
-  load("../output/err_cv.RData")
-  plot(model_values, err_cv[,1], xlab="Interaction Depth", ylab="CV Error",
-       main="Cross Validation Error", type="n", ylim=c(0, 0.25))
-  points(model_values, err_cv[,1], col="blue", pch=16)
-  lines(model_values, err_cv[,1], col="blue")
-  arrows(model_values, err_cv[,1]-err_cv[,2], model_values, err_cv[,1]+err_cv[,2], 
-        length=0.1, angle=90, code=3)
-}
-```
-
-
-* Choose the "best"" parameter value
-```{r best_model}
-model_best=model_values[1]
-if(run.cv){
-  model_best <- model_values[which.min(err_cv[,1])]
+* Train the model with the entire training set using the selected model (model parameter)
+```{r}
+if(!run.feature.train) {
+  load("C:/Users/Albert/Desktop/Proj3-Sec1Group7/output/feature_train_rf.Rdata")
+  feat_train <- dat_train$feature
+  label_train <- dat_train$label
 }
 
-par <- list(samplesize=model_best)
-```
-
-* Train the model with the entire training set using the selected model (model parameter) via cross-validation.
-```{r final_train}
 tm_train=NA
-tm_train <- system.time(fit_train <- trainRF(feat_train, label_train, par))
-save(fit_train, file="../output/fit_train.RData")
+tm_train <- system.time(fit_train_rf <- train_rf(feat_train, label_train, hyper_grid.h2o, search_criteria))
+save(fit_train_rf, file="../output/fit_train_rf.RData")
 ```
 
 ### Step 5: Super-resolution for test images
