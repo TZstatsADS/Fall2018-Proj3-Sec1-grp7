@@ -67,8 +67,8 @@ feature <- function(LR_dir, HR_dir, n_points=1000){
   for(i in 1:n_files){
     imgLR <- readImage(paste0(LR_dir,  "img_", sprintf("%04d", i), ".jpg"))
     imgHR <- readImage(paste0(HR_dir,  "img_", sprintf("%04d", i), ".jpg"))
-    imgLR <- as.array(imgLR)
-    imgHR <- as.array(imgHR)
+    #imgLR <- as.array(imgLR)
+    #imgHR <- as.array(imgHR)
     ### step 1. sample n_points from imgLR
     imgLR0 <- zero_pad(imgLR)
     sample_int <- sample(1:(dim(imgLR)[1]*dim(imgLR)[2]), n_points, replace = FALSE)
