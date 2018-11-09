@@ -54,6 +54,7 @@ train_rf <- function(feat_train, label_train, grid, search_criteria) {
     ## train randomForest model
     grid <- h2o.grid(
       algorithm = "randomForest",
+      grid_id = "rf_grid"
       x = x,
       y = y, 
       training_frame = datMat.h2o,
