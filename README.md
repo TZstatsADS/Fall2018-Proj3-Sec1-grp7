@@ -14,9 +14,9 @@ Term: Fall 2018
 
 + Project summary: In this project, we created a classification engine for enhance the resolution of images. The train set includes 1500 pairs of images of high resolution and low resolution, respectively. We improved the baseline model (GBM) by varying the depth from 1 to 7 and decided to use depth = 5 as the optimal value. The training time of the baseline model is more than 6 hours. The test time of the baseline model is around 53 minutes.  We aso trained a randomForest model and a SRCNN model. After comparison, we decided to use SRCNN as our final improved model. The training time and test time of SRCNN model are around 7min20s and 4min55s.
 
-The source code of baseline model is in [**this folder**](lib/). 
-The source code of randomForst model is in [**this folder**](lib/RandomForest/). 
-The source code of SRCNN model is in [**this folder**](doc/).
+The source code of baseline model is in [this folder](lib/). 
+The source code of randomForst model is in [this folder](lib/RandomForest/). 
+The source code of SRCNN model is in [this folder](doc/).
 
 **To run this script, follow the instructions in the [doc](doc/) folder of this repository. **
 
